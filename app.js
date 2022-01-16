@@ -1,9 +1,9 @@
 const express = require('express');
-const dotenv = require('dotenv');
+require('dotenv').config();
+require('./mongoose');
 const Note = require('./models/note.model');
 
 const app = express();
-dotenv.config();
 app.use(express.urlencoded());
 app.use(express.json());
 

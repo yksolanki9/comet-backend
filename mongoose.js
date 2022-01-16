@@ -1,7 +1,8 @@
 const mongoose = require('mongoose');
-const { MONGO_USER, MONGO_PASSWORD } = process.env;
+require('dotenv').config();
+const MONGO_URI = process.env.MONGO_URI;
 
-mongoose.connect(`mongodb+srv://${MONGO_USER}:${MONGO_PASSWORD}@${MONGO_CLUSTER}.mongodb.net/${MONGO_DBNAME}?retryWrites=true&w=majority`, {
+mongoose.connect( MONGO_URI, {
   useNewUrlParser: true,
   useUnifiedTopology: true
 });
