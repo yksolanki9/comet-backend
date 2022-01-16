@@ -9,6 +9,14 @@ app.use(express.json());
 
 const PORT = process.env.PORT;
 
+app.get('/', (req, res) => {
+  try {
+    res.redirect('/notes');
+  } catch(err) {
+    res.status(500).send(err);
+  }
+});
+
 app.get('/notes', async (req, res) => {
   try {
     const notes = await Note.find();
