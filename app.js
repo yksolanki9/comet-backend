@@ -47,5 +47,5 @@ app.patch('/note/:noteId', async (req, res) => {
 })
 
 app.listen(PORT, () => {
-  console.log('Server running on port');
+  console.log('Server running on port', PORT);
 });
