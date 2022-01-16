@@ -1,6 +1,7 @@
 const mongoose = require('mongoose');
+const { MONGO_USER, MONGO_PASSWORD } = process.env;
 
-mongoose.connect(`mongodb+srv://yashsol:yashsol@comet-notes.gplt8.mongodb.net/myFirstDatabase?retryWrites=true&w=majority`, {
+mongoose.connect(`mongodb+srv://${MONGO_USER}:${MONGO_PASSWORD}@comet-notes.gplt8.mongodb.net/myFirstDatabase?retryWrites=true&w=majority`, {
   useNewUrlParser: true,
   useUnifiedTopology: true
 });
