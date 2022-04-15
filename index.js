@@ -47,6 +47,7 @@ app.post('/register', async (req, res) => {
 
     return res.status(201).send({
       message: 'User registered successfully',
+      userId: savedUser._id,
       email,
       access_token: accessToken
     });
@@ -82,6 +83,7 @@ app.post('/login', async (req, res) => {
 
   return res.status(201).send({
     message: 'Logged in successfully',
+    userId: user._id,
     email,
     access_token: accessToken
   });
