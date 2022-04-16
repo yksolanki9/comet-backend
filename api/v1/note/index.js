@@ -1,6 +1,5 @@
 const express = require('express');
 const mongoose = require('mongoose');
-const Schema = mongoose;
 const router = express.Router();
 const Note = require('../../../models/note.model');
 const UserNotes = require('../../../models/user-notes.model');
@@ -45,6 +44,9 @@ router.post('/', async (req, res) => {
 router.get('/:noteId', async (req, res) => {
   try {
     const note = await Note.findById(req.params.noteId);
+    if (!note) {
+      return res.status(404).send('Note with id does not exist');
+    }
     if (note.userId.toString() !== req.user.userId) {
       return res.status(403).send('Unauthorized to access data');
     }
@@ -60,6 +62,9 @@ router.get('/:noteId', async (req, res) => {
 router.patch('/:noteId', async (req, res) => {
   try {
     const note = await Note.findByIdAndUpdate(req.params.noteId, req.body);
+    if (!note) {
+      return res.status(404).send('Note with id does not exist');
+    }
     if (note.userId.toString() !== req.user.userId) {
       return res.status(403).send('Unauthorized to access data');
     }
@@ -69,6 +74,24 @@ router.patch('/:noteId', async (req, res) => {
       status: 500,
       message: err.message
     });
+  }
+});
+
+router.delete('/:noteId', async (req, res) => {
+  try {
+    const note = await Note.findByIdAndDelete(req.params.noteId);
+    if (!note) {
+      return res.status(404).send('Note with id does not exist');
+    }
+    await UserNotes.findByIdAndUpdate(req.user.userId, {
+      '$pull': {'notes': req.params.noteId}
+    });
+    return res.status(200).send('Note deleted successfully');
+  } catch(err) {
+    res.status(500).send({
+      status: 500,
+      message: err.message
+    })
   }
 });
 
