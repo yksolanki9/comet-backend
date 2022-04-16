@@ -83,7 +83,7 @@ router.delete('/:noteId', async (req, res) => {
     if (!note) {
       return res.status(404).send('Note with id does not exist');
     }
-    await UserNotes.findByIdAndUpdate(req.user.userId, {
+    await UserNotes.findOneAndUpdate({ userId: req.user.userId}, {
       '$pull': {'notes': req.params.noteId}
     });
     return res.status(200).send('Note deleted successfully');
