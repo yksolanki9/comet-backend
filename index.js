@@ -3,11 +3,14 @@ const express = require('express');
 const jwt = require('jsonwebtoken');
 const User = require('./models/user.model');
 const auth = require('./middleware/auth');
+const cors = require('cors');
 
 require('dotenv').config();
 require('./config/mongoose');
 
 const app = express();
+
+app.use(cors());
 app.use(express.urlencoded());
 app.use(express.json());
 
