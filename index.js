@@ -69,12 +69,12 @@ app.post('/login', async (req, res) => {
   //Check if user is registered
   const user = await User.findOne({email});
   if(!user) {
-    return res.status(404).send('No user exists with the entered email');
+    return res.status(401).send('No user exists with the entered email');
   }
 
   //Check if password is correct
   if(!(await bcrypt.compare(password, user.password))) {
-    return res.status(404).send('Incorrect password');
+    return res.status(401).send('Incorrect password');
   };
 
   const accessToken = jwt.sign({
@@ -84,7 +84,7 @@ app.post('/login', async (req, res) => {
     expiresIn: '1h'
   });
 
-  return res.status(201).send({
+  return res.status(200).send({
     message: 'Logged in successfully',
     userId: user._id,
     email,
