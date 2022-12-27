@@ -14,7 +14,9 @@ router.post("/", verifyToken, async (req, res) => {
     });
     await note.save(async (err) => {
       if (err) {
-        return res.status(500).send(err);
+        return res.status(500).send({
+          message: err.message,
+        });
       }
       try {
         const userNote = await UserNotes.findOneAndUpdate(
@@ -32,7 +34,9 @@ router.post("/", verifyToken, async (req, res) => {
           await newUserNote.save();
         }
       } catch (err) {
-        return res.status(500).send(err.message);
+        return res.status(500).send({
+          message: err.message,
+        });
       }
       return res.status(200).send(note);
     });
@@ -48,10 +52,14 @@ router.get("/:noteId", verifyToken, async (req, res) => {
   try {
     const note = await Note.findById(req.params.noteId);
     if (!note) {
-      return res.status(404).send("Note with id does not exist");
+      return res.status(404).send({
+        message: "Note with id does not exist",
+      });
     }
     if (note.userId.toString() !== req.user.userId) {
-      return res.status(403).send("Unauthorized to access data");
+      return res.status(403).send({
+        message: "Unauthorized to access data",
+      });
     }
     return res.status(200).send(note);
   } catch (err) {
@@ -66,10 +74,14 @@ router.patch("/:noteId", verifyToken, async (req, res) => {
   try {
     const note = await Note.findByIdAndUpdate(req.params.noteId, req.body);
     if (!note) {
-      return res.status(404).send("Note with id does not exist");
+      return res.status(404).send({
+        message: "Note with id does not exist",
+      });
     }
     if (note.userId.toString() !== req.user.userId) {
-      return res.status(403).send("Unauthorized to access data");
+      return res.status(403).send({
+        message: "Unauthorized to access data",
+      });
     }
     return res.status(200).send(note);
   } catch (err) {
@@ -84,7 +96,9 @@ router.delete("/:noteId", verifyToken, async (req, res) => {
   try {
     const note = await Note.findByIdAndDelete(req.params.noteId);
     if (!note) {
-      return res.status(404).send("Note with id does not exist");
+      return res.status(404).send({
+        message: "Note with id does not exist",
+      });
     }
     await UserNotes.findOneAndUpdate(
       { userId: req.user.userId },
@@ -92,7 +106,9 @@ router.delete("/:noteId", verifyToken, async (req, res) => {
         $pull: { notes: req.params.noteId },
       }
     );
-    return res.status(200).send("Note deleted successfully");
+    return res.status(200).send({
+      message: "Note deleted successfully",
+    });
   } catch (err) {
     res.status(500).send({
       status: 500,

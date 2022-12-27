@@ -21,12 +21,16 @@ app.post("/register", async (req, res) => {
     const { firstName, lastName, email, password } = req.body;
 
     if (!(firstName && lastName && email && password)) {
-      return res.status(400).send("All inputs are mandatory");
+      return res.status(400).send({
+        message: "All inputs are mandatory",
+      });
     }
 
     // Check if user already exists
     if (await User.findOne({ email })) {
-      return res.status(409).send("User with entered email already exists");
+      return res.status(409).send({
+        message: "User with entered email already exists",
+      });
     }
 
     // Generate pwd hash with 10 saltRounds
@@ -64,18 +68,24 @@ app.post("/login", async (req, res) => {
   const { email, password } = req.body;
 
   if (!(email && password)) {
-    return res.status(400).send("All inputs are mandatory");
+    return res.status(400).send({
+      message: "All inputs are mandatory",
+    });
   }
 
   //Check if user is registered
   const user = await User.findOne({ email });
   if (!user) {
-    return res.status(401).send("No user exists with the entered email");
+    return res.status(401).send({
+      message: "No user exists with the entered email",
+    });
   }
 
   //Check if password is correct
   if (!(await bcrypt.compare(password, user.password))) {
-    return res.status(401).send("Incorrect password");
+    return res.status(401).send({
+      message: "Incorrect password",
+    });
   }
 
   const accessToken = jwt.sign(
