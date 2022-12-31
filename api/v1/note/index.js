@@ -22,7 +22,12 @@ router.post("/", verifyToken, async (req, res) => {
         const userNote = await UserNotes.findOneAndUpdate(
           { userId: req.user.userId },
           {
-            $push: { notes: note._id },
+            $push: {
+              notes: {
+                $each: [note._id],
+                $position: 0,
+              },
+            },
           }
         );
 
