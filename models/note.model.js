@@ -10,6 +10,7 @@ const noteSchema = new Schema(
     title: String,
     content: String,
     images: [String],
+    dateOfEntry: Date,
   },
   { timestamps: true }
 );
