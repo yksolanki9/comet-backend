@@ -23,10 +23,7 @@ router.post("/", verifyToken, async (req, res) => {
           { userId: req.user.userId },
           {
             $push: {
-              notes: {
-                $each: [note._id],
-                $position: 0,
-              },
+              notes: note._id,
             },
           }
         );

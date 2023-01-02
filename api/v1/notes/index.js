@@ -9,7 +9,14 @@ router.get("/", verifyToken, async (req, res) => {
     await UserNotes.findOne({
       userId: req.user.userId,
     })
-      .populate("notes")
+      .populate({
+        path: "notes",
+        options: {
+          sort: {
+            dateOfEntry: -1,
+          },
+        },
+      })
       .exec((err, userNotes) => {
         if (err) {
           return res.status(500).send("Some issue at backend");
