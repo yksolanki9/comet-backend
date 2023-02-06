@@ -84,7 +84,16 @@ router.get("/:noteId", verifyToken, async (req, res) => {
 
 router.patch("/:noteId", verifyToken, async (req, res) => {
   try {
-    const note = await Note.findByIdAndUpdate(req.params.noteId, req.body);
+    let imageDetails = [];
+    //Upload images to imageKit and get imageKit metadata
+    if (req.body.images && req.body.images.length > 0) {
+      imageDetails = await uploadImages(req.body.images);
+    }
+    delete req.body.images;
+    const note = await Note.findByIdAndUpdate(req.params.noteId, {
+      ...req.body,
+      images: imageDetails,
+    });
     if (!note) {
       return res.status(404).send({
         message: "Note with id does not exist",
