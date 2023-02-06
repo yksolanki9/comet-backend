@@ -11,12 +11,14 @@ const imagekit = new ImageKit({
   urlEndpoint: process.env.IMAGEKIT_URL_ENDPOINT,
 });
 
+//TODO: Map images to notes
 router.post("/", verifyToken, async (req, res) => {
   try {
-    await imagekit.upload({
+    const data = await imagekit.upload({
       file: req.body.base64,
       fileName: req.body.fileName,
     });
+    console.log("DATA iS", data);
     res.status(201).send({
       message: "Image uploaded successfully",
     });

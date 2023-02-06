@@ -4,13 +4,23 @@ const verifyToken = require("../../../middleware/auth");
 const router = express.Router();
 const Note = require("../../../models/note.model");
 const UserNotes = require("../../../models/user-notes.model");
+const { uploadImages } = require("../../../utils/imagekit");
 
 router.post("/", verifyToken, async (req, res) => {
   try {
+    let imageDetails = [];
+    //Upload images to imageKit and get imageKit metadata
+    if (req.body.images && req.body.images.length > 0) {
+      imageDetails = await uploadImages(req.body.images);
+    }
+    delete req.body.images;
+
+    //Create new note
     const note = new Note({
       _id: new mongoose.Types.ObjectId(),
       userId: req.user.userId,
       ...req.body,
+      images: imageDetails,
     });
     await note.save(async (err) => {
       if (err) {

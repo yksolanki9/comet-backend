@@ -9,7 +9,20 @@ const noteSchema = new Schema(
     },
     title: String,
     content: String,
-    images: [String],
+    images: [
+      {
+        fileId: String,
+        name: String,
+        size: Number,
+        versionInfo: { id: String, name: String },
+        filePath: String,
+        url: String,
+        fileType: String,
+        height: Number,
+        width: Number,
+        thumbnailUrl: String,
+      },
+    ],
     dateOfEntry: Date,
   },
   { timestamps: true }
