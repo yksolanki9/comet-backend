@@ -11,11 +11,15 @@ const uploadImages = async (images) => {
   try {
     const result = [];
     for (let image of images) {
-      const res = await imagekit.upload({
-        file: image.base64,
-        fileName: image.name,
-      });
-      result.push(res);
+      if (image.base64) {
+        const res = await imagekit.upload({
+          file: image.base64,
+          fileName: image.name,
+        });
+        result.push(res);
+      } else if (image.url) {
+        result.push(image);
+      }
     }
     return result;
   } catch (err) {
