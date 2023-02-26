@@ -3,7 +3,6 @@ const mongoose = require("mongoose");
 const verifyToken = require("../../../middleware/auth");
 const router = express.Router();
 const Note = require("../../../models/note.model");
-const UserNotes = require("../../../models/user-notes.model");
 const { uploadImages } = require("../../../utils/imagekit");
 
 router.post("/", verifyToken, async (req, res) => {
@@ -22,36 +21,8 @@ router.post("/", verifyToken, async (req, res) => {
       ...req.body,
       images: imageDetails,
     });
-    await note.save(async (err) => {
-      if (err) {
-        return res.status(500).send({
-          message: err.message,
-        });
-      }
-      try {
-        const userNote = await UserNotes.findOneAndUpdate(
-          { userId: req.user.userId },
-          {
-            $push: {
-              notes: note._id,
-            },
-          }
-        );
-
-        if (!userNote) {
-          const newUserNote = new UserNotes({
-            userId: req.user.userId,
-            notes: [note._id],
-          });
-          await newUserNote.save();
-        }
-      } catch (err) {
-        return res.status(500).send({
-          message: err.message,
-        });
-      }
-      return res.status(200).send(note);
-    });
+    await note.save();
+    return res.status(200).send(note);
   } catch (err) {
     res.status(500).send({
       status: 500,
@@ -121,12 +92,6 @@ router.delete("/:noteId", verifyToken, async (req, res) => {
         message: "Note with id does not exist",
       });
     }
-    await UserNotes.findOneAndUpdate(
-      { userId: req.user.userId },
-      {
-        $pull: { notes: req.params.noteId },
-      }
-    );
     return res.status(200).send({
       message: "Note deleted successfully",
     });
